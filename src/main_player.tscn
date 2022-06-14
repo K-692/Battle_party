@@ -515,7 +515,7 @@ scale = Vector2( 0.25, 0.25 )
 z_index = -1
 frames = SubResource( 90 )
 animation = "fly"
-frame = 48
+frame = 20
 playing = true
 flip_v = true
 
@@ -525,7 +525,7 @@ scale = Vector2( 0.25, 0.25 )
 z_index = -1
 frames = SubResource( 90 )
 animation = "fly"
-frame = 16
+frame = 48
 playing = true
 flip_v = true
 

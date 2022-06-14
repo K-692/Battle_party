@@ -13,21 +13,15 @@ _global_script_classes=[ {
 "class": "Actor",
 "language": "GDScript",
 "path": "res://Actor.gd"
-}, {
-"base": "",
-"class": "GitAPI",
-"language": "NativeScript",
-"path": "res://addons/godot-git-plugin/git_api.gdns"
 } ]
 _global_script_class_icons={
-"Actor": "",
-"GitAPI": ""
+"Actor": ""
 }
 
 [application]
 
 config/name="Battle Party"
-run/main_scene="res://src/Scenes/Wellcome.tscn"
+run/main_scene="res://src/Scenes/GamePlay.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -36,7 +30,7 @@ MultiPlayer="*res://MultiPlayer.gd"
 
 [gdnative]
 
-singletons=[ "res://addons/godot-git-plugin/git_api.gdnlib" ]
+singletons=[  ]
 
 [global]
 

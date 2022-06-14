@@ -54,9 +54,13 @@ func character_behaviour() -> Vector2:
 			
 	return Vector2(x_dir, 1.0)
 	
+func camera_calibaration():
+	pass
+	
 	
 func _physics_process(delta: float) -> void:
 	#var direction: = get_direction()
+	
 	var direction: = character_behaviour()
 	
 	#if Input.is_action_pressed("jump_fly"):
