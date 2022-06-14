@@ -24,6 +24,11 @@ config/name="Battle Party"
 run/main_scene="res://src/Scenes/GamePlay.tscn"
 config/icon="res://icon.png"
 
+[global]
+
+android=false
+sdk=false
+
 [input]
 
 move_left={
