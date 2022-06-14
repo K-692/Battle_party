@@ -515,7 +515,7 @@ scale = Vector2( 0.25, 0.25 )
 z_index = -1
 frames = SubResource( 90 )
 animation = "fly"
-frame = 56
+frame = 48
 playing = true
 flip_v = true
 
@@ -525,8 +525,15 @@ scale = Vector2( 0.25, 0.25 )
 z_index = -1
 frames = SubResource( 90 )
 animation = "fly"
-frame = 24
+frame = 16
 playing = true
 flip_v = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+margin_left = -37.0
+margin_top = -41.0
+margin_right = 49.0
+margin_bottom = -27.0
+value = 50.0
 
 [connection signal="player_fling" from="." to="FlingFire" method="_on_player_player_fling"]

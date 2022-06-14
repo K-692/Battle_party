@@ -4,7 +4,7 @@ extends Actor
 onready var _animated_sprite = $AnimatedSprite
 onready var _shoot_animated_sprite = $ShootAnimatedSprite
 onready var _jetPack = $FlingFire
-
+onready var _jetPackCap = $ProgressBar
 
 signal player_fling(is_fling)
 
@@ -13,18 +13,29 @@ var bullet = preload("res://src/Objs/Bullet.tscn")
 enum State {IDLE, FLY, CROUCH, RUN}
 var state = State.IDLE
 
+var jet_pack_capacity = 100
+
 func character_behaviour() -> Vector2:
-	if Input.is_action_pressed("jump_fly"):
+	if Input.is_action_pressed("jump_fly") and jet_pack_capacity > 0:
 		state = State.FLY
-	elif Input.is_action_pressed("move_left"):
-		state = State.IDLE
-	elif Input.is_action_pressed("move_right"):
-		state = State.IDLE
-	elif Input.is_action_pressed("crouch"):
-		state = State.CROUCH
+		jet_pack_capacity -= 0.3
+		if jet_pack_capacity < 0:
+			jet_pack_capacity = 0.0
 	else:
-		state = State.IDLE
 		
+		jet_pack_capacity += 0.05
+		if jet_pack_capacity > 100:
+			jet_pack_capacity = 100
+			
+		if Input.is_action_pressed("move_left"):
+			state = State.IDLE
+		elif Input.is_action_pressed("move_right"):
+			state = State.IDLE
+		elif Input.is_action_pressed("crouch"):
+			state = State.CROUCH
+		else:
+			state = State.IDLE
+	
 	var x_dir = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 		
 	match state:
@@ -32,7 +43,7 @@ func character_behaviour() -> Vector2:
 			return Vector2(x_dir, 1.0)
 				
 		State.FLY:
-			return Vector2(x_dir, -1.0)
+			return Vector2(x_dir, -1.0 if jet_pack_capacity > 0 else 1.0)
 			
 		State.CROUCH:
 			return Vector2(x_dir, 1.0)
@@ -51,7 +62,7 @@ func _physics_process(delta: float) -> void:
 	#if Input.is_action_pressed("jump_fly"):
 	velocity = calculate_move_velocity(velocity, direction, speed)
 	velocity = move_and_slide(velocity, Vector2.UP)
-	update_animation(direction, velocity)
+	#update_animation(direction, velocity)
 	process_shoot()
 	update_animation(direction, velocity)
 
@@ -68,6 +79,7 @@ func process_shoot() -> void:
 	
 func update_animation(direction: Vector2, velocity: Vector2) -> void:
 	get_node("CollisionShape2D").disabled = false
+	_jetPackCap.value = jet_pack_capacity
 #	if direction.y == 1.0:
 #		_animated_sprite.play("Jump")
 	if velocity.x < 0 and !_animated_sprite.flip_h:
