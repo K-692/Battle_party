@@ -10,17 +10,51 @@ signal player_fling(is_fling)
 
 var bullet = preload("res://src/Objs/Bullet.tscn")
 
+enum State {IDLE, FLY, CROUCH, RUN}
+var state = State.IDLE
 
+func character_behaviour() -> Vector2:
+	if Input.is_action_pressed("jump_fly"):
+		state = State.FLY
+	elif Input.is_action_pressed("move_left"):
+		state = State.IDLE
+	elif Input.is_action_pressed("move_right"):
+		state = State.IDLE
+	elif Input.is_action_pressed("crouch"):
+		state = State.CROUCH
+	else:
+		state = State.IDLE
+		
+	var x_dir = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+		
+	match state:
+		State.IDLE:
+			return Vector2(x_dir, 1.0)
+				
+		State.FLY:
+			return Vector2(x_dir, -1.0)
+			
+		State.CROUCH:
+			return Vector2(x_dir, 1.0)
+			
+				
+		State.RUN:
+			return Vector2(x_dir, 1.0)
+			
+	return Vector2(x_dir, 1.0)
+	
+	
 func _physics_process(delta: float) -> void:
-	var direction: = get_direction()
+	#var direction: = get_direction()
+	var direction: = character_behaviour()
+	
 	#if Input.is_action_pressed("jump_fly"):
 	velocity = calculate_move_velocity(velocity, direction, speed)
 	velocity = move_and_slide(velocity, Vector2.UP)
 	update_animation(direction, velocity)
-
 	process_shoot()
 	update_animation(direction, velocity)
-	
+
 	
 	
 func process_shoot() -> void:
@@ -31,7 +65,9 @@ func process_shoot() -> void:
 			b.speed.x *= -1
 		get_parent().add_child(b)
 	
+	
 func update_animation(direction: Vector2, velocity: Vector2) -> void:
+	get_node("CollisionShape2D").disabled = false
 #	if direction.y == 1.0:
 #		_animated_sprite.play("Jump")
 	if velocity.x < 0 and !_animated_sprite.flip_h:
@@ -48,10 +84,19 @@ func update_animation(direction: Vector2, velocity: Vector2) -> void:
 		_animated_sprite.flip_h = false
 		
 		
-	if abs(velocity.x) > 0 and is_on_floor():
+	if abs(velocity.x) > 0 and is_on_floor() and not Input.is_action_pressed("crouch"):
 		_animated_sprite.play("Run")
 	else:
-		_animated_sprite.play("Idle") 
+		if Input.is_action_pressed("crouch"):
+			get_node("CollisionShape2D").disabled = true
+			_animated_sprite.play("Crouch")
+			if velocity.x < 0 and !_animated_sprite.flip_h:
+				_animated_sprite.flip_h = true
+			if velocity.x > 0 and _animated_sprite.flip_h:
+				_animated_sprite.flip_h = false
+		else:
+			get_node("CollisionShape2D").disabled = false
+			_animated_sprite.play("Idle") 
 	
 	if Input.is_action_pressed("shoot"):
 		#_shoot_animated_sprite.stop()
@@ -73,6 +118,8 @@ func calculate_move_velocity(
 		speed: Vector2
 	) -> Vector2:
 	var new_velocity = linear_velocity
+	if Input.is_action_pressed("crouch"):
+		speed.x = 150
 	new_velocity.x = speed.x * direction.x
 	new_velocity.y += gravity * get_physics_process_delta_time()
 	
@@ -84,14 +131,3 @@ func calculate_move_velocity(
 	
 	return new_velocity
 
-func calculate_flight_velocity(
-		linear_velocity : Vector2,
-		direction: Vector2,
-		speed: Vector2
-	) -> Vector2:
-	var new_velocity = linear_velocity
-	new_velocity.y += 200
-
-	if direction.y == -1.0:
-		new_velocity.y = speed.y * direction.y
-	return new_velocity
