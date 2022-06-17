@@ -67,7 +67,7 @@ func _physics_process(delta: float) -> void:
 	velocity = calculate_move_velocity(velocity, direction, speed)
 	velocity = move_and_slide(velocity, Vector2.UP)
 	#update_animation(direction, velocity)
-	process_shoot()
+#	process_shoot()
 	update_animation(direction, velocity)
 
 	
@@ -147,3 +147,7 @@ func calculate_move_velocity(
 	
 	return new_velocity
 
+
+
+func _on_Joystick_controller_is_active(distance, degree) -> void:
+	$Position2D.rotation_degrees = degree
