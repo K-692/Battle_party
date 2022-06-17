@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 
 # Declare member variables here. Examples:
@@ -9,20 +9,46 @@ onready var ipAddrDisplay = $IpAddrDisplay
 var ipAddr : String = "dummy"
 # Called when the node enters the scene tree for the first time.
 
+func _fix_background():
+	var window_size = OS.get_window_size()
+	var texture = $TextureRect.texture.get_size()
+	var window_aspec = window_size[0]/ window_size[1]
+	var texture_aspec = texture[0]/ texture[1]
+	var scale = 1
+	if window_aspec > texture_aspec:
+		scale = window_size[0] / texture[0]
+		$TextureRect.margin_top = (window_size[1]  - (texture[1] * scale)) / 2
+		
+	else:
+		#match height
+		scale = window_size[1] / texture[1]
+		$TextureRect.margin_left = (window_size[0]  - (texture[0] * scale)) / 2
+	
+	$TextureRect.rect_scale = Vector2(scale, scale)
+	
+
 func _ready():
+	_fix_background()
+	get_tree().get_root().connect("size_changed", self, "_fix_background")
+	
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
-
-
+	MultiPlayer.connect("new_server", self, "_new_server")
+	ipAddrDisplay.text += "\n%s -> %s" % MultiPlayer.get_local_ip() 
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
+func _new_server(game_info):
+	ipAddrDisplay.text += '\nnew_server %s'  % to_json(game_info)
 
 func _on_Create_button_up():
+	MultiPlayer.create_ad()
+	return
 	if MultiPlayer.create_server():
 		ipAddrDisplay.text += '\nserver created'
 	else:
@@ -32,6 +58,8 @@ func _on_Create_button_up():
 func _on_Join_button_up():
 	ipAddr = ipAddrInput.text
 	ipAddrDisplay.text = ipAddr
+	MultiPlayer.listen_ad()
+	return 
 	if MultiPlayer.create_clint(ipAddr):
 		ipAddrDisplay.text += '\ncreate_clint created'
 	else:
