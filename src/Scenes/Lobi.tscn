@@ -1,75 +1,187 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://src/Scenes/Lobi.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/LuckiestGuy-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://assets/backgrounds/bg_temp.jpg" type="Texture" id=3]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=8]
+size = 44
+outline_size = 2
+outline_color = Color( 0.352941, 0.352941, 0.352941, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_top = 8
+extra_spacing_bottom = 8
+extra_spacing_char = 1
+extra_spacing_space = 2
 font_data = ExtResource( 2 )
 
-[sub_resource type="Theme" id=1]
-default_font = SubResource( 2 )
+[sub_resource type="Theme" id=9]
+default_font = SubResource( 8 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.121569, 0.0862745, 0.803922, 0.780392 )
+
+[sub_resource type="StyleBoxFlat" id=10]
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.0509804, 0.670588, 0.0588235, 0.529412 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0.129412, 0.172549, 0.509804, 0.705882 )
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.603922, 0.223529, 0.223529, 1 )
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ "Searching for host" ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "loading"
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ "Searching for host", "Searching for host.", "Searching for host..", "Searching for host..." ]
+}
 
 [node name="Lobi" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+theme = SubResource( 9 )
 script = ExtResource( 1 )
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_min_size = Vector2( 600, 600 )
-theme = SubResource( 1 )
+rect_scale = Vector2( 0.6, 0.6 )
+size_flags_horizontal = 15
+size_flags_vertical = 15
+size_flags_stretch_ratio = 6.3
+texture = ExtResource( 3 )
+stretch_mode = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-margin_right = 1024.0
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+margin_right = 500.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 500, 0 )
+custom_styles/panel = SubResource( 5 )
+
+[node name="Players" type="VBoxContainer" parent="HBoxContainer/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 40.0
+margin_top = 50.0
+custom_constants/separation = 4
+
+[node name="Label" type="Label" parent="HBoxContainer/Panel/Players"]
+margin_right = 460.0
+margin_bottom = 61.0
+text = "Player"
+
+[node name="Me" type="Label" parent="HBoxContainer/Panel/Players"]
+margin_top = 65.0
+margin_right = 460.0
+margin_bottom = 126.0
+custom_styles/normal = SubResource( 10 )
+text = "fdsaf"
+valign = 1
+
+[node name="Panel3" type="Panel" parent="HBoxContainer"]
+margin_left = 504.0
+margin_right = 1210.0
+margin_bottom = 1080.0
+rect_min_size = Vector2( 500, 0 )
+size_flags_horizontal = 3
+custom_styles/panel = SubResource( 6 )
+
+[node name="Panel2" type="Panel" parent="HBoxContainer"]
+margin_left = 1214.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+custom_styles/panel = SubResource( 7 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Panel2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 50.0
+margin_right = 60.0
+
+[node name="Label" type="Label" parent="HBoxContainer/Panel2/VBoxContainer"]
+margin_right = 766.0
+margin_bottom = 61.0
+text = "Messages"
+align = 1
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer/Panel2"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -102.0
+placeholder_text = "type hare"
+
+[node name="ServerFinder" type="CenterContainer" parent="."]
+anchor_left = 0.344
+anchor_top = 0.222
+anchor_right = 0.656
+anchor_bottom = 0.778
+margin_left = -0.480042
+margin_top = 0.239975
+margin_right = 0.47998
+margin_bottom = -0.23999
+
+[node name="Panel" type="Panel" parent="ServerFinder"]
+margin_right = 600.0
 margin_bottom = 600.0
-alignment = 1
+rect_min_size = Vector2( 600, 600 )
+custom_styles/panel = SubResource( 1 )
 
-[node name="RichTextLabel8" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 236.0
-margin_right = 1024.0
-margin_bottom = 254.0
-rect_min_size = Vector2( 0, 10 )
-size_flags_vertical = 0
-text = "Player Name"
-fit_content_height = true
+[node name="Label" type="Label" parent="ServerFinder/Panel"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -221.0
+margin_top = 50.0
+margin_right = 232.0
+margin_bottom = 111.0
+text = "Searching for host."
 
-[node name="RichTextLabel4" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 258.0
-margin_right = 1024.0
-margin_bottom = 276.0
-rect_min_size = Vector2( 0, 10 )
-text = "Player Name"
-fit_content_height = true
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ServerFinder/Panel/Label"]
+autoplay = "loading"
+reset_on_save = false
+playback_speed = 0.3
+anims/RESET = SubResource( 2 )
+anims/loading = SubResource( 3 )
 
-[node name="RichTextLabel6" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 280.0
-margin_right = 1024.0
-margin_bottom = 298.0
-rect_min_size = Vector2( 0, 10 )
-text = "Player Name"
-fit_content_height = true
+[node name="VBoxContainer" type="VBoxContainer" parent="ServerFinder/Panel"]
+margin_left = 225.0
+margin_top = 180.0
+margin_right = 375.0
+margin_bottom = 420.0
+rect_min_size = Vector2( 60, 0 )
+custom_constants/separation = 10
 
-[node name="RichTextLabel7" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 302.0
-margin_right = 1024.0
-margin_bottom = 320.0
-rect_min_size = Vector2( 0, 10 )
-text = "Player Name"
-fit_content_height = true
-
-[node name="RichTextLabel9" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 324.0
-margin_right = 1024.0
-margin_bottom = 342.0
-rect_min_size = Vector2( 0, 10 )
-text = "Player Name"
-fit_content_height = true
-
-[node name="RichTextLabel10" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
-margin_top = 346.0
-margin_right = 1024.0
-margin_bottom = 364.0
-rect_min_size = Vector2( 0, 10 )
-text = "Player Name"
-fit_content_height = true
+[connection signal="text_entered" from="HBoxContainer/Panel2/LineEdit" to="." method="_on_LineEdit_text_entered"]

@@ -21,12 +21,13 @@ _global_script_class_icons={
 [application]
 
 config/name="Battle Party"
-run/main_scene="res://src/Scenes/GamePlay.tscn"
+run/main_scene="res://src/Scenes/Wellcome.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 MultiPlayer="*res://MultiPlayer.gd"
+Utils="*res://src/utils/Utils.gd"
 
 [display]
 
