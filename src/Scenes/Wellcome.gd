@@ -12,13 +12,9 @@ export(String, FILE, "*.tscn,*.scn") var lobi_scene: String
 
 
 
-func _fix_background():
-	Utils.background_cover($TextureRect, OS.get_window_size())
-	
+
 
 func _ready():
-	_fix_background()
-	get_tree().get_root().connect("size_changed", self, "_fix_background")
 	ipAddrDisplay.text += "\n%s -> %s" % MultiPlayer.get_local_ip() 
 	 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

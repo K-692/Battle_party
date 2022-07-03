@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/backgrounds/bg_temp.jpg" type="Texture" id=1]
+[ext_resource path="res://src/components/CoverTexture.gd" type="Script" id=2]
+
+[node name="CoverTexture" type="TextureRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -335.882
+margin_bottom = -120.96
+rect_scale = Vector2( 0.394304, 0.394304 )
+texture = ExtResource( 1 )
+script = ExtResource( 2 )

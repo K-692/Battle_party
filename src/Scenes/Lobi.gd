@@ -1,17 +1,12 @@
 extends Control
 
 
-func _fix_background():
-	Utils.background_cover($TextureRect, OS.get_window_size())
-
-
 onready var server_list_node = $ServerFinder/Panel/VBoxContainer
 
 var server_btn = preload("res://src/components/Button.tscn")
 
 func _ready():
-	_fix_background()
-	get_tree().get_root().connect("size_changed", self, "_fix_background")
+
 	MultiPlayer.connect("new_server", self, "_new_server")
 	MultiPlayer.connect("new_player", self, "_new_player")
 	

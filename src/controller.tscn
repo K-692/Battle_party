@@ -15,13 +15,44 @@ void fragment(){
 [sub_resource type="ShaderMaterial" id=3]
 shader = SubResource( 4 )
 
-[node name="Joystick" type="Node2D"]
-position = Vector2( 517, 281 )
+[node name="Joystick" type="Control"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_left = 111.0
+margin_top = -599.0
+margin_right = 549.0
+margin_bottom = -82.0
 script = ExtResource( 3 )
+action_left = "look_left"
+action_right = "look_right"
+action_up = "look_up"
+action_down = "look_down"
 
-[node name="ControllerRadius" type="Sprite" parent="."]
+[node name="Base" type="TextureRect" parent="."]
 material = SubResource( 3 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -100.0
+margin_top = -100.0
+margin_right = 100.0
+margin_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_pivot_offset = Vector2( 100, 100 )
 texture = ExtResource( 2 )
 
-[node name="ControllerPosition" type="Sprite" parent="."]
+[node name="Tip" type="TextureRect" parent="Base"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -32.0
+margin_top = -32.0
+margin_right = 32.0
+margin_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+rect_pivot_offset = Vector2( 32, 32 )
 texture = ExtResource( 1 )

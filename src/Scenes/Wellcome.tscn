@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://src/Scenes/Wellcome.gd" type="Script" id=1]
-[ext_resource path="res://assets/backgrounds/bg_temp.jpg" type="Texture" id=2]
+[ext_resource path="res://src/components/CoverTexture.tscn" type="PackedScene" id=2]
 
 [node name="Wellcome" type="Control"]
 anchor_right = 1.0
@@ -9,15 +9,7 @@ anchor_bottom = 1.0
 script = ExtResource( 1 )
 lobi_scene = "res://src/Scenes/Lobi.tscn"
 
-[node name="TextureRect" type="TextureRect" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-rect_scale = Vector2( 0.26, 0.26 )
-size_flags_horizontal = 15
-size_flags_vertical = 15
-size_flags_stretch_ratio = 6.3
-texture = ExtResource( 2 )
-stretch_mode = 6
+[node name="TextureRect" parent="." instance=ExtResource( 2 )]
 
 [node name="Join" type="Button" parent="."]
 margin_left = 292.0

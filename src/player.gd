@@ -2,7 +2,7 @@ extends Actor
 
 
 onready var _animated_sprite = $AnimatedSprite
-onready var _shoot_animated_sprite = $ShootAnimatedSprite
+onready var _shoot_animated_sprite = $Position2D/ShootAnimatedSprite
 onready var _jetPack = $FlingFire
 onready var _jetPackCap = $ProgressBar
 
@@ -16,7 +16,8 @@ var state = State.IDLE
 var jet_pack_capacity = 100
 
 func character_behaviour() -> Vector2:
-	if Input.is_action_pressed("jump_fly") and jet_pack_capacity > 0:
+
+	if Input.get_action_strength("jump_fly") > 0.42 and jet_pack_capacity > 0:
 		state = State.FLY
 		jet_pack_capacity -= 0.3
 		if jet_pack_capacity < 0:
@@ -31,7 +32,7 @@ func character_behaviour() -> Vector2:
 			state = State.IDLE
 		elif Input.is_action_pressed("move_right"):
 			state = State.IDLE
-		elif Input.is_action_pressed("crouch"):
+		elif Input.get_action_strength("crouch") > 0.42:
 			state = State.CROUCH
 		else:
 			state = State.IDLE
@@ -46,6 +47,7 @@ func character_behaviour() -> Vector2:
 			return Vector2(x_dir, -1.0 if jet_pack_capacity > 0 else 1.0)
 			
 		State.CROUCH:
+			x_dir *= 0.5
 			return Vector2(x_dir, 1.0)
 			
 				
@@ -66,19 +68,37 @@ func _physics_process(delta: float) -> void:
 	#if Input.is_action_pressed("jump_fly"):
 	velocity = calculate_move_velocity(velocity, direction, speed)
 	velocity = move_and_slide(velocity, Vector2.UP)
+	
+	_update_look_at()
+	
 	#update_animation(direction, velocity)
 #	process_shoot()
 	update_animation(direction, velocity)
 
 	
+func _update_look_at():
+	var x = Input.get_action_strength("look_right") - Input.get_action_strength("look_left")
+	var y = Input.get_action_strength("look_down") - Input.get_action_strength("look_up")
 	
-func process_shoot() -> void:
-	if Input.is_action_pressed("shoot"):
-		var b = bullet.instance()
-		b.global_position = _shoot_animated_sprite.global_position
-		if _animated_sprite.flip_h:
-			b.speed.x *= -1
-		get_parent().add_child(b)
+	var vec = Vector2(x, y)
+	if vec == Vector2.ZERO:
+		return
+		
+	$Position2D.rotation = vec.angle()
+	if vec.distance_to(Vector2.ZERO) == 1:
+		process_shoot(vec)
+	
+	
+func process_shoot(vec: Vector2) -> void:
+	var b = bullet.instance()
+	b.global_position = _shoot_animated_sprite.global_position
+	b.rotation = vec.angle()
+	b.speed = vec.normalized() * 1000
+#	if _animated_sprite.flip_h:
+#		b.speed.x *= -1
+	get_parent().add_child(b)
+	_shoot_animated_sprite.frame = 0
+	_shoot_animated_sprite.play("shoot")
 	
 	
 func update_animation(direction: Vector2, velocity: Vector2) -> void:
@@ -100,10 +120,12 @@ func update_animation(direction: Vector2, velocity: Vector2) -> void:
 		_animated_sprite.flip_h = false
 		
 		
-	if abs(velocity.x) > 0 and is_on_floor() and not Input.is_action_pressed("crouch"):
+	if abs(velocity.x) > 0 and is_on_floor() and not Input.get_action_strength("crouch") > 0.42:
 		_animated_sprite.play("Run")
+		var strain = abs(Input.get_action_strength("move_right") - Input.get_action_strength("move_left"))
+		_animated_sprite.speed_scale = range_lerp(strain, 0.0, 1.0, 0.5, 1.0)
 	else:
-		if Input.is_action_pressed("crouch"):
+		if Input.get_action_strength("crouch") > 0.42:
 			get_node("CollisionShape2D").disabled = true
 			_animated_sprite.play("Crouch")
 			if velocity.x < 0 and !_animated_sprite.flip_h:
@@ -114,10 +136,10 @@ func update_animation(direction: Vector2, velocity: Vector2) -> void:
 			get_node("CollisionShape2D").disabled = false
 			_animated_sprite.play("Idle") 
 	
-	if Input.is_action_pressed("shoot"):
+#	if Input.is_action_pressed("shoot"):
 		#_shoot_animated_sprite.stop()
-		_shoot_animated_sprite.frame = 0
-		_shoot_animated_sprite.play("shoot")
+#		_shoot_animated_sprite.frame = 0
+#		_shoot_animated_sprite.play("shoot")
 		#_shoot_animated_sprite
 
 	
@@ -125,7 +147,7 @@ func get_direction() -> Vector2:
 	return Vector2(
 		Input.get_action_strength("move_right") - 
 		Input.get_action_strength("move_left"),
-		-1.0 if Input.is_action_pressed("jump_fly") else 1.0
+		-1.0 if Input.get_action_strength("jump_fly") > 0.42 else 1.0
 	)
 	
 func calculate_move_velocity(
@@ -134,8 +156,8 @@ func calculate_move_velocity(
 		speed: Vector2
 	) -> Vector2:
 	var new_velocity = linear_velocity
-	if Input.is_action_pressed("crouch"):
-		speed.x = 150
+#	if Input.is_action_pressed("crouch"):
+#		speed.x = 150
 	new_velocity.x = speed.x * direction.x
 	new_velocity.y += gravity * get_physics_process_delta_time()
 	

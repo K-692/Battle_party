@@ -13,21 +13,28 @@ _global_script_classes=[ {
 "class": "Actor",
 "language": "GDScript",
 "path": "res://Actor.gd"
+}, {
+"base": "Control",
+"class": "Joystick",
+"language": "GDScript",
+"path": "res://src/controller.gd"
 } ]
 _global_script_class_icons={
-"Actor": ""
+"Actor": "",
+"Joystick": ""
 }
 
 [application]
 
 config/name="Battle Party"
-run/main_scene="res://src/Scenes/Wellcome.tscn"
+run/main_scene="res://src/Scenes/GamePlay.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 MultiPlayer="*res://MultiPlayer.gd"
 Utils="*res://src/utils/Utils.gd"
+Database="*res://src/scripts/database.gd"
 
 [display]
 
@@ -90,6 +97,22 @@ click={
 "deadzone": 0.5,
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
+}
+look_up={
+"deadzone": 0.5,
+"events": [  ]
+}
+look_down={
+"deadzone": 0.5,
+"events": [  ]
+}
+look_right={
+"deadzone": 0.5,
+"events": [  ]
+}
+look_left={
+"deadzone": 0.5,
+"events": [  ]
 }
 
 [input_devices]
